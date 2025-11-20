@@ -17,7 +17,7 @@ The platform provides a smile score, personalized feedback, and community-driven
 - **User dashboard** with detailed smile analytics.
 - **Leaderboard system** based on user engagement.
 - **Community interaction:** likes, comments, reactions.
-- **Admin monitoring panel** (optional, if included).
+- **Admin monitoring panel**.
 
 ### ⚙️ Architecture Highlights
 - Frontend: **HTML, CSS, JavaScript**
@@ -114,7 +114,7 @@ The platform provides a smile score, personalized feedback, and community-driven
 **Backend:**  
 - Node.js  
 - PHP  
-- Express.js (if used)
+
 
 **Database:**  
 - MySQL
@@ -161,7 +161,7 @@ The platform provides a smile score, personalized feedback, and community-driven
 - Input validation on all endpoints  
 - Secure file uploads  
 - CORS restrictions  
-- API rate limiting (optional)  
+- API rate limiting 
 
 ---
 
@@ -218,7 +218,7 @@ AI model deployed as a Docker container
 
 API exposed over HTTPS
 
-CDN caching for media files (optional)
+CDN caching for media files 
 
 🙌 Acknowledgements
 OpenCV & TensorFlow communities
