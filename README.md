@@ -30,32 +30,62 @@ The platform provides a smile score, personalized feedback, and community-driven
 ---
 
 ## 📐 System Architecture
-```mermaid
-flowchart LR
-    subgraph Client
-        U[User Browser <br/> Webcam Access]
-    end
-
-    U --> FE[Frontend Web App <br/> (HTML/JS)]
-    FE --> API[Backend API <br/> Node.js / PHP]
-    API --> Ingest[Image Ingest Service]
-    Ingest --> MQ[Message Queue <br/> RabbitMQ/SQS]
-    MQ --> Worker[Worker Service]
-
-    Worker --> Model[AI Model Server <br/> Dockerized]
-    Model --> DB[(MySQL / DynamoDB)]
-    Worker --> CDN[(Image Storage <br/> S3 + CDN)]
-    Worker --> LB[Leaderboard Service]
-    Worker --> CS[Community Service <br/> Likes/Comments/Shares]
-    Worker --> GS[Games Service]
-    Worker --> NS[Notification Service <br/> WebSocket/SSE]]
-
-    LB --> FE
-    CS --> FE
-    GS --> FE
-    NS --> FE
-    DB --> FE
-
+                       +---------------------+
+                       |     User Browser    |
+                       |  (Camera Capture)   |
+                       +----------+----------+
+                                  |
+                                  v
+                     +---------------------------+
+                     |     Frontend (HTML/JS)    |
+                     |  Smile Capture & Display  |
+                     +-------------+-------------+
+                                   |
+                                   v
+                     +---------------------------+
+                     |      Backend API          |
+                     |   (Node.js / PHP Layer)   |
+                     +------+------+-------------+
+                            |      |
+                            |      +------------------------------+
+                            |                                     |
+                            v                                     v
+              +----------------------+             +---------------------------+
+              |  Image Ingest Service |             |   Community Service      |
+              | (validates & forwards)|             | Likes / Comments / Share |
+              +-----------+----------+             +-----------+---------------+
+                          |                                    |
+                          v                                    |
+                +-------------------+                         |
+                |  Message Queue    |                         |
+                | RabbitMQ / SQS    |                         |
+                +---------+---------+                         |
+                          |                                   |
+                          v                                   |
+                +-----------------------+                     |
+                |     Worker Service    |                     |
+                | (Async Processing)    |                     |
+                +----+---------+--------+                     |
+                     |         |                              |
+                     v         v                              v
+   +----------------------+   +--------------------+   +-----------------------+
+   |  AI Model Server     |   |  Leaderboard Svc   |   |   Games Service       |
+   | (Docker + ML Model)  |   | (Redis + DB Views) |   | Challenges / Scores   |
+   +----------+-----------+   +----------+---------+   +-----------+-----------+
+              |                          |                         |
+              v                          v                         v
+   +----------------------+   +--------------------+    +-----------------------+
+   |      Database        |   |     Redis Cache     |   |  Notification Service |
+   | MySQL / PostgreSQL   |   | Leaderboard Counters|   | WebSocket / SSE Push  |
+   +----------+-----------+   +----------+----------+   +-----------+-----------+
+              |                        |                           |
+              +------------------------+---------------------------+
+                                   |
+                                   v
+                  +-------------------------------------+
+                  |   Frontend UI Updated in Real Time  |
+                  |  (Scores, Leaderboard, Community)   |
+                  +-------------------------------------+
 
 ## 🧠 AI Model
 
