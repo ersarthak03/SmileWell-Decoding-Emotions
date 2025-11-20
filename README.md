@@ -30,83 +30,32 @@ The platform provides a smile score, personalized feedback, and community-driven
 ---
 
 ## 📐 System Architecture
+```mermaid
 flowchart LR
-  %% Clients
-  subgraph Clients
-    U[Browser / Mobile App (WebRTC / Camera)]
-  end
+    subgraph Client
+        U[User Browser <br/> Webcam Access]
+    end
 
-  %% Edge / CDN
-  U -->|HTTPS, static assets| CDN[CDN (CloudFront / Cloudflare)]
+    U --> FE[Frontend Web App <br/> (HTML/JS)]
+    FE --> API[Backend API <br/> Node.js / PHP]
+    API --> Ingest[Image Ingest Service]
+    Ingest --> MQ[Message Queue <br/> RabbitMQ/SQS]
+    MQ --> Worker[Worker Service]
 
-  %% Frontend
-  CDN --> FE[Frontend Web App (React / Vanilla JS)]
-  U -->|WebSocket/SSE| FE
+    Worker --> Model[AI Model Server <br/> Dockerized]
+    Model --> DB[(MySQL / DynamoDB)]
+    Worker --> CDN[(Image Storage <br/> S3 + CDN)]
+    Worker --> LB[Leaderboard Service]
+    Worker --> CS[Community Service <br/> Likes/Comments/Shares]
+    Worker --> GS[Games Service]
+    Worker --> NS[Notification Service <br/> WebSocket/SSE]]
 
-  %% API Gateway & Auth
-  FE -->|REST / GraphQL| APIGW[API Gateway / Load Balancer]
-  APIGW --> Auth[Auth Service (Cognito / JWT)]
-  APIGW --> FEAuth[Auth-protected routes]
+    LB --> FE
+    CS --> FE
+    GS --> FE
+    NS --> FE
+    DB --> FE
 
-  %% Backend microservices
-  subgraph Backend
-    API[API Service (Node.js / Express / PHP)] 
-    Ingest[Image Ingest Service]
-    ModelSrv[Inference Service (Dockerized ML API)]
-    Queue[Message Queue (RabbitMQ / SQS / Kafka)]
-    Worker[Worker Pool (async processing)]
-    DB[(Primary DB) - MySQL/Postgres]
-    Cache[Redis Cache]
-    Leaderboard[Leaderboard Service]
-    Community[Community Service (Likes/Comments/Shares)]
-    Games[Games Service]
-    Notifications[Realtime Push (WebSocket / FCM / APNS)]
-    Analytics[Analytics & ETL]
-    CDNMedia[Media Storage (S3) + CDN]
-    Auth <-- API
-    API --> Ingest
-    Ingest --> Queue
-    Queue --> Worker
-    Worker --> ModelSrv
-    ModelSrv --> DB
-    Worker --> CDNMedia
-    API --> DB
-    API --> Cache
-    API --> Leaderboard
-    API --> Community
-    API --> Games
-    API --> Notifications
-    API --> Analytics
-  end
-
-  %% AI/ML & Monitoring
-  subgraph ML & Infra
-    ModelSrv
-    Training[Model Training (GPU, Batch Jobs)]
-    Artifacts[Model Registry]
-    Monitoring[Prometheus + Grafana + Logs]
-  end
-
-  Worker --> Artifacts
-  Training --> Artifacts
-  ModelSrv --> Monitoring
-  API --> Monitoring
-
-  %% DevOps & CI/CD
-  DevOps[CI/CD (GitHub Actions / GitHub Actions -> Docker Registry)]
-  DevOps -->|build/push| ModelSrv
-  DevOps -->|deploy| API
-
-  %% External integrations
-  API -->|Email| SES[SNS/SES]
-  API -->|SMS| Twilio
-  API -->|Payments| PaymentGateway
-
-  %% Arrows for end-to-end
-  CDNMedia --> FE
-  Notifications --> FE
-  Leaderboard --> FE
-  Community --> FE
 
 ## 🧠 AI Model
 
