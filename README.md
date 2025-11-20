@@ -30,6 +30,7 @@ The platform provides a smile score, personalized feedback, and community-driven
 ---
 
 ## 📐 System Architecture
+
                        +---------------------+
                        |     User Browser    |
                        |  (Camera Capture)   |
@@ -86,6 +87,7 @@ The platform provides a smile score, personalized feedback, and community-driven
                   |   Frontend UI Updated in Real Time  |
                   |  (Scores, Leaderboard, Community)   |
                   +-------------------------------------+
+
 
 ## 🧠 AI Model
 
